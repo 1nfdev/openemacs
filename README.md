@@ -31,6 +31,7 @@ Syntax highlighting support:
 * C++ (`*.cpp`, `*.hpp`)
 * Go (`*.go`)
 * Python (`*.py`)
+* JavaScript (`*.js`, `*.jsx`)
 
 openemacs is based on Kilo - a minimal editor written by Salvatore Sanfilippo (antirez).
 
