@@ -112,6 +112,7 @@ char *GO_SYNTAX_HIGHLIGHT_KEYWORDS[] = {
     // Go types
     "nil|", "true|", "false|", "error|", "err|", "int|", "int32|", "int64|", "uint|", "uint32|", "uint64|", "string|", "bool|", NULL
 };
+
 // Python
 char *PYTHON_SYNTAX_HIGHLIGHT_FILE_EXTENSIONS[] = { ".py", NULL };
 char *PYTHON_SYNTAX_HIGHLIGHT_KEYWORDS[] = {
@@ -125,11 +126,9 @@ char *PYTHON_SYNTAX_HIGHLIGHT_KEYWORDS[] = {
 char *JAVASCRIPT_SYNTAX_HIGHLIGHT_FILE_EXTENSIONS[] = { ".js", ".jsx", NULL };
 char *JAVASCRIPT_SYNTAX_HIGHLIGHT_KEYWORDS[] = {
     // JavaScript keywords
-    "break", "case", "catch", "class", "const", "continue", "debugger", "default", "delete", "do", "else", "enum", "export", "extends", "finally", "for", "function", "if", "implements", "import", "in", "instanceof", "interface", "let", "new", "package",
-    "private", "protected", "public", "return", "static", "super", "switch", "this", "throw", "try", "typeof", "var", "void", "while", "with", "yield", "true", "false", "null", "NaN", "global", "window", "prototype", "constructor", "document", "isNaN", "arguments", "undefined",
+    "break", "case", "catch", "class", "const", "continue", "debugger", "default", "delete", "do", "else", "enum", "export", "extends", "finally", "for", "function", "if", "implements", "import", "in", "instanceof", "interface", "let", "new", "package", "private", "protected", "public", "return", "static", "super", "switch", "this", "throw", "try", "typeof", "var", "void", "while", "with", "yield", "true", "false", "null", "NaN", "global", "window", "prototype", "constructor", "document", "isNaN", "arguments", "undefined",
     // JavaScript primitives
-    "Infinity|", "Array|", "Object|", "Number|", "String|", "Boolean|", "Function|", "ArrayBuffer|", "DataView|", "Float32Array|", "Float64Array|", "Int8Array|", "Int16Array|", "Int32Array|", "Uint8Array|", "Uint8ClampedArray|", "Uint32Array|",
-    "Date|", "Error|", "Map|", "RegExp|", "Symbol|", "WeakMap|", "WeakSet|", "Set|", NULL
+    "Infinity|", "Array|", "Object|", "Number|", "String|", "Boolean|", "Function|", "ArrayBuffer|", "DataView|", "Float32Array|", "Float64Array|", "Int8Array|", "Int16Array|", "Int32Array|", "Uint8Array|", "Uint8ClampedArray|", "Uint32Array|", "Date|", "Error|", "Map|", "RegExp|", "Symbol|", "WeakMap|", "WeakSet|", "Set|", NULL
 };
 
 struct editor_syntax SYNTAX_HIGHLIGHT_DATABASE[] = {
@@ -546,7 +545,7 @@ static char *editor_rows_to_string(int *buflen) {
         total_length += E.row[i].size + 1; // +1 is for "\n" at end of every row
     }
     *buflen = total_length;
-    total_length++; // Also make space for nulterm
+    total_length += 1; // Also make space for nulterm
     p = buf = calloc(total_length, sizeof(char));
     for (int i = 0; i < E.number_of_rows; i++) {
         memcpy(p, E.row[i].chars, E.row[i].size);
