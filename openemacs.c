@@ -1055,10 +1055,9 @@ static void console_buffer_close(void) {
     abuf_free(&ab);
 }
 
-static void editor_process_keypress(void) {
+static void editor_process_key(int key) {
     static int quit_confirmations_left = 1;
     static int previous_key = -1;
-    int key = editor_read_key();
     if (previous_key == CTRL_Q) {
         // Quoted insert - insert character as-is
         editor_insert_char(key);
@@ -1197,6 +1196,6 @@ int main(int argc, char **argv) {
     editor_open(argv[1]);
     while (true) {
         editor_refresh_screen();
-        editor_process_keypress();
+        editor_process_key(editor_read_key());
     }
 }
