@@ -84,7 +84,7 @@ struct append_buffer {
 static struct editor_state E;
 
 enum KEY_ACTION {
-    CTRL_A = 1, CTRL_C = 3, CTRL_D = 4, CTRL_E = 5, CTRL_F = 6, BACKSPACE = 8, TAB = 9,
+    CTRL_A = 1, CTRL_B = 2, CTRL_C = 3, CTRL_D = 4, CTRL_E = 5, CTRL_F = 6, BACKSPACE = 8, TAB = 9,
     CTRL_K = 11, CTRL_L = 12, ENTER = 13, CTRL_N = 14, CTRL_P = 16, CTRL_Q = 17, CTRL_R = 18,
     CTRL_S = 19, CTRL_U = 21, CTRL_X = 24, CTRL_Y = 25, CTRL_Z = 26, ESC = 27, FORWARD_DELETE =  127,
     // The following are just soft codes, not really reported by the
@@ -857,7 +857,7 @@ static void editor_move_cursor_by_arrow_key_input(int key) {
     int row_length;
     struct editor_row *row = (file_row >= E.number_of_rows) ? NULL : &E.row[file_row];
     bool vertical_move = false;
-    if (key == ARROW_LEFT) {
+    if (key == ARROW_LEFT || key == CTRL_B) {
         if (E.cursor_x == 0) {
             if (E.column_offset) {
                 E.column_offset--;
@@ -872,7 +872,7 @@ static void editor_move_cursor_by_arrow_key_input(int key) {
         } else {
             E.cursor_x -= 1;
         }
-    } else if (key == ARROW_RIGHT) {
+    } else if (key == ARROW_RIGHT || key == CTRL_F) {
         if (row && file_column < row->size) {
             if (E.cursor_x == E.screen_columns - 1) {
                 E.column_offset++;
@@ -983,9 +983,9 @@ static void editor_search(void) {
             editor_set_status_message("%s", "");
             free(saved_hl);
             return;
-        } else if (key == ARROW_RIGHT || key == ARROW_DOWN || key == CTRL_S) {
+        } else if (key == ARROW_RIGHT || key == ARROW_DOWN || key == CTRL_S || key == CTRL_F) {
             search_next = 1;
-        } else if (key == ARROW_LEFT || key == ARROW_UP || key == CTRL_R) {
+        } else if (key == ARROW_LEFT || key == ARROW_UP || key == CTRL_R || key == CTRL_B) {
             search_next = -1;
         } else if (isprint(key) && query_length < SEARCH_QUERY_MAX_LENGTH) {
             query[query_length++] = key;
@@ -1078,7 +1078,7 @@ static void editor_process_keypress(void) {
         while (times--) {
             editor_move_cursor_by_arrow_key_input(key == PAGE_UP ? ARROW_UP : ARROW_DOWN);
         }
-    } else if (key == ARROW_DOWN || key == ARROW_LEFT || key == ARROW_RIGHT || key == ARROW_UP || key == CTRL_N || key == CTRL_P) {
+    } else if (key == ARROW_DOWN || key == ARROW_LEFT || key == ARROW_RIGHT || key == ARROW_UP || key == CTRL_N || key == CTRL_P || key == CTRL_B || key == CTRL_F) {
         E.has_open_cut_buffer = false;
         editor_move_cursor_by_arrow_key_input(key);
     } else if (key == CTRL_A) {
