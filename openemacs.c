@@ -1066,6 +1066,9 @@ static void editor_process_keypress(void) {
         editor_insert_newline();
     } else if (key == BACKSPACE || key == DEL_KEY || key == FORWARD_DELETE) {
         editor_delete_char();
+    } else if (key == CTRL_D) {
+        editor_move_cursor_by_arrow_key_input(ARROW_RIGHT);
+        editor_delete_char();
     } else if (key == TAB) {
         for (size_t i = 0; i < 4; i++) { editor_insert_char(' '); }
     } else if (key == PAGE_DOWN || key == PAGE_UP || key == CTRL_V) {
