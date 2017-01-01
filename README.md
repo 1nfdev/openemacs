@@ -28,7 +28,7 @@ Keys:
 Syntax highlighting support:
 
 * C (`*.c`, `*.h`)
-* C++ (`*.cpp`, `*.hpp`)
+* C++ (`*.cpp`, `*.hpp`, `*.cc`)
 * Go (`*.go`)
 * Python (`*.py`)
 * JavaScript (`*.js`, `*.jsx`)
