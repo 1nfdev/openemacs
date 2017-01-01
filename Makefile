@@ -11,4 +11,4 @@ lint:
 	cppcheck --enable=all --inconclusive openemacs.c
 
 clean:
-	rm -f openemacs
+	rm -rf openemacs openemacs.dSYM *# *~
