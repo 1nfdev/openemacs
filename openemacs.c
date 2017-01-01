@@ -86,7 +86,8 @@ static struct editor_state E;
 enum KEY_ACTION {
     CTRL_A = 1, CTRL_B = 2, CTRL_C = 3, CTRL_D = 4, CTRL_E = 5, CTRL_F = 6, BACKSPACE = 8, TAB = 9,
     CTRL_K = 11, CTRL_L = 12, ENTER = 13, CTRL_N = 14, CTRL_P = 16, CTRL_Q = 17, CTRL_R = 18,
-    CTRL_S = 19, CTRL_U = 21, CTRL_X = 24, CTRL_Y = 25, CTRL_Z = 26, ESC = 27, FORWARD_DELETE =  127,
+    CTRL_S = 19, CTRL_U = 21, CTRL_V = 22, CTRL_X = 24, CTRL_Y = 25, CTRL_Z = 26, ESC = 27,
+    FORWARD_DELETE =  127,
     // The following are just soft codes, not really reported by the
     // terminal directly.
     ARROW_LEFT = 1000, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, DEL_KEY, HOME_KEY,
@@ -1067,11 +1068,11 @@ static void editor_process_keypress(void) {
         editor_delete_char();
     } else if (key == TAB) {
         for (size_t i = 0; i < 4; i++) { editor_insert_char(' '); }
-    } else if (key == PAGE_DOWN || key == PAGE_UP) {
+    } else if (key == PAGE_DOWN || key == PAGE_UP || key == CTRL_V) {
         E.has_open_cut_buffer = false;
         if (key == PAGE_UP && E.cursor_y != 0) {
             E.cursor_y = 0;
-        } else if (key == PAGE_DOWN && E.cursor_y != E.screen_rows - 1) {
+        } else if ((key == PAGE_DOWN || key == CTRL_V) && E.cursor_y != E.screen_rows - 1) {
             E.cursor_y = E.screen_rows - 1;
         }
         int times = E.screen_rows - 2;
