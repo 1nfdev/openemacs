@@ -11,5 +11,8 @@ lint:
 	clang --analyze openemacs.c -o /dev/null
 	cppcheck --enable=all --inconclusive openemacs.c 2>&1 | grep -vE '(Checking openemacs|Cppcheck cannot find all the include files)' || true
 
+cloc:
+	cloc openemacs.c
+
 clean:
 	rm -rf openemacs openemacs.dSYM *# *~
