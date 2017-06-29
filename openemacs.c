@@ -1055,9 +1055,13 @@ static void console_buffer_close(void) {
     abuf_free(&ab);
 }
 
-static void editor_process_key(int key) {
+static bool editor_process_keypress(void) {
     static int quit_confirmations_left = 1;
     static int previous_key = -1;
+    int key = editor_read_key();
+    if (key == -1) {
+        return false;
+    }
     if (previous_key == CTRL_Q) {
         // Quoted insert - insert character as-is
         editor_insert_char(key);
@@ -1087,11 +1091,11 @@ static void editor_process_key(int key) {
     } else if (key == CTRL_A) {
         editor_move_cursor_to_x_position(0);
     } else if (key == CTRL_C) {
-        if (previous_key != CTRL_X) { return; }
+        if (previous_key != CTRL_X) { return false; }
         if (E.dirty && quit_confirmations_left--) {
             editor_set_status_message("WARNING! Unsaved changes. Press ctrl-x + ctrl-c one more time to confirm.");
             previous_key = key;
-            return;
+            return true;
         } else {
             console_buffer_close();
             exit(EXIT_SUCCESS);
@@ -1099,7 +1103,7 @@ static void editor_process_key(int key) {
     } else if (key == CTRL_E) {
         editor_move_cursor_to_x_position(-1);
     } else if (key == CTRL_K) {
-        if (E.row_offset + E.cursor_y >= E.number_of_rows) { return; }
+        if (E.row_offset + E.cursor_y >= E.number_of_rows) { return false; }
         struct editor_row *row = E.row + E.row_offset + E.cursor_y;
         if (!E.has_open_cut_buffer) {
             editor_free_cut_buffer();
@@ -1113,7 +1117,7 @@ static void editor_process_key(int key) {
         editor_recenter_vertically();
     } else if (key == CTRL_X || key == ESC) {
         previous_key = key;
-        return;
+        return false;
     } else if (key == CTRL_S || (previous_key == CTRL_X && (key == 's' || key == 'S'))) {
         if (previous_key == CTRL_X) {
             editor_save();
@@ -1137,6 +1141,7 @@ static void editor_process_key(int key) {
     }
     quit_confirmations_left = 1; // Reset quit confirmations.
     previous_key = key;
+    return true;
 }
 
 static void editor_update_window_size(void) {
@@ -1194,8 +1199,11 @@ int main(int argc, char **argv) {
     }
     editor_init();
     editor_open(argv[1]);
+    editor_refresh_screen();
     while (true) {
-        editor_refresh_screen();
-        editor_process_key(editor_read_key());
+        bool refresh_needed = editor_process_keypress();
+        if (refresh_needed) {
+            editor_refresh_screen();
+        }
     }
 }
