@@ -561,6 +561,7 @@ static char *editor_rows_to_string(int *buflen) {
 // Insert a character at the specified position in a row, moving the remaining
 // chars on the right if needed.
 static void editor_row_insert_char(struct editor_row *row, int at, int c) {
+    if (!row) { return; }
     if (at > row->size) {
         // Pad the string with spaces if the insert location is outside the
         // current length by more than a single character.
