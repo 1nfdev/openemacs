@@ -321,8 +321,8 @@ static void editor_update_syntax(struct editor_row *row) {
     char *p = row->rendered_chars;
     int i = 0; // Current char offset
     while (*p && isspace(*p)) {
-        p++;
-        i++;
+        p += 1;
+        i += 1;
     }
     bool prev_sep = true; // Tell the parser if 'i' points to start of word.
     bool in_comment = false; // Are we inside multi-line comment?
@@ -351,8 +351,8 @@ static void editor_update_syntax(struct editor_row *row) {
                 continue;
             } else {
                 prev_sep = false;
-                p++;
-                i++;
+                p += 1;
+                i += 1;
                 continue;
             }
         } else if (!in_string_char && *p == multi_line_comment_start[0] && *(p + 1) == multi_line_comment_start[1]) {
@@ -375,14 +375,14 @@ static void editor_update_syntax(struct editor_row *row) {
                 continue;
             }
             if (*p == in_string_char) { in_string_char = 0; }
-            p++;
-            i++;
+            p += 1;
+            i += 1;
             continue;
         } else if (*p == '"' || *p == '\'') {
             in_string_char = *p;
             row->rendered_chars_syntax_highlight_type[i] = SYNTAX_HIGHLIGHT_MODE_STRING;
-            p++;
-            i++;
+            p += 1;
+            i += 1;
             prev_sep = false;
             continue;
         }
@@ -390,8 +390,8 @@ static void editor_update_syntax(struct editor_row *row) {
         if ((isdigit(*p) && (prev_sep || row->rendered_chars_syntax_highlight_type[i - 1] == SYNTAX_HIGHLIGHT_MODE_NUMBER)) ||
                 (*p == '.' && i > 0 && row->rendered_chars_syntax_highlight_type[i - 1] == SYNTAX_HIGHLIGHT_MODE_NUMBER)) {
             row->rendered_chars_syntax_highlight_type[i] = SYNTAX_HIGHLIGHT_MODE_NUMBER;
-            p++;
-            i++;
+            p += 1;
+            i += 1;
             prev_sep = false;
             continue;
         }
@@ -401,7 +401,7 @@ static void editor_update_syntax(struct editor_row *row) {
             for (j = 0; keywords[j]; j++) {
                 size_t keyword_length = strlen(keywords[j]);
                 bool keyword_type_2 = keywords[j][keyword_length - 1] == '|';
-                if (keyword_type_2) { keyword_length--; }
+                if (keyword_type_2) { keyword_length -= 1; }
                 if (strlen(p) >= keyword_length && !memcmp(p, keywords[j], keyword_length) && is_separator(*(p + keyword_length))) {
                     // Keyword
                     memset(row->rendered_chars_syntax_highlight_type + i, keyword_type_2 ? SYNTAX_HIGHLIGHT_MODE_KEYWORD_GROUP_2 : SYNTAX_HIGHLIGHT_MODE_KEYWORD_GROUP_1,
@@ -418,8 +418,8 @@ static void editor_update_syntax(struct editor_row *row) {
         }
         // Not special chars
         prev_sep = is_separator(*p);
-        p++;
-        i++;
+        p += 1;
+        i += 1;
     }
     for (int i = row->rendered_size - 1; i >= 0; i--) {
         if (row->rendered_chars_syntax_highlight_type[i] == SYNTAX_HIGHLIGHT_MODE_MULTI_LINE_COMMENT) { break; }
@@ -469,7 +469,7 @@ static void editor_select_syntax_highlight_based_on_filename_suffix(char const *
                 E.syntax_highlight_mode = s;
                 return;
             }
-            i++;
+            i += 1;
         }
     }
 }
@@ -481,7 +481,7 @@ static void editor_update_row(struct editor_row *row) {
     // respecting tabs, substituting non printable characters with '?'.
     free(row->rendered_chars);
     for (int i = 0; i < row->size; i++) {
-        if (row->chars[i] == TAB) { tabs++; }
+        if (row->chars[i] == TAB) { tabs += 1; }
     }
     row->rendered_chars = calloc(row->size + tabs * 8 + 1, sizeof(char));
     int local_index = 0;
@@ -507,7 +507,7 @@ static void editor_insert_row(int at, char const *s, size_t len) {
     E.row = realloc(E.row, sizeof(struct editor_row) * (E.number_of_rows + 1));
     if (at != E.number_of_rows) {
         memmove(E.row + at + 1, E.row + at, sizeof(E.row[0]) * (E.number_of_rows - at));
-        for (int i = at + 1; i <= E.number_of_rows; i++) { E.row[i].index_in_file++; }
+        for (int i = at + 1; i <= E.number_of_rows; i++) { E.row[i].index_in_file += 1; }
     }
     E.row[at].size = len;
     E.row[at].chars = calloc(len + 1, sizeof(char));
@@ -518,7 +518,7 @@ static void editor_insert_row(int at, char const *s, size_t len) {
     E.row[at].rendered_size = 0;
     E.row[at].index_in_file = at;
     editor_update_row(E.row + at);
-    E.number_of_rows++;
+    E.number_of_rows += 1;
     E.dirty = true;
 }
 
@@ -529,8 +529,8 @@ static void editor_delete_row(int at) {
     struct editor_row *row = E.row + at;
     editor_free_row(row);
     memmove(E.row + at, E.row + at + 1, sizeof(E.row[0]) * (E.number_of_rows - at - 1));
-    for (int i = at; i < E.number_of_rows - 1; i++) { E.row[i].index_in_file++; }
-    E.number_of_rows--;
+    for (int i = at; i < E.number_of_rows - 1; i++) { E.row[i].index_in_file += 1; }
+    E.number_of_rows -= 1;
     E.dirty = true;
 }
 
@@ -552,7 +552,7 @@ static char *editor_rows_to_string(int *buflen) {
         memcpy(p, E.row[i].chars, E.row[i].size);
         p += E.row[i].size;
         *p = '\n';
-        p++;
+        p += 1;
     }
     *p = '\0';
     return buf;
@@ -576,7 +576,7 @@ static void editor_row_insert_char(struct editor_row *row, int at, int c) {
         // char plus the (already existing) NULL term.
         row->chars = realloc(row->chars, row->size + 2);
         memmove(row->chars + at + 1, row->chars + at, row->size - at + 1);
-        row->size++;
+        row->size += 1;
     }
     row->chars[at] = c;
     editor_update_row(row);
@@ -598,7 +598,7 @@ static void editor_row_delete_char(struct editor_row *row, int at) {
     if (row->size <= at) { return; }
     memmove(row->chars + at, row->chars + at + 1, row->size - at);
     editor_update_row(row);
-    row->size--;
+    row->size -= 1;
     E.dirty = true;
 }
 
@@ -617,9 +617,9 @@ static void editor_insert_char(int c) {
     row = &E.row[file_row];
     editor_row_insert_char(row, file_column, c);
     if (E.cursor_x == E.screen_columns - 1) {
-        E.column_offset++;
+        E.column_offset += 1;
     } else {
-        E.cursor_x++;
+        E.cursor_x += 1;
     }
     E.dirty = true;
 }
@@ -652,9 +652,9 @@ static void editor_insert_newline(void) {
     }
 fix_cursor:
     if (E.cursor_y == E.screen_rows - 1) {
-        E.row_offset++;
+        E.row_offset += 1;
     } else {
-        E.cursor_y++;
+        E.cursor_y += 1;
     }
     E.cursor_x = 0;
     E.column_offset = 0;
@@ -674,9 +674,9 @@ static void editor_delete_char(void) {
         editor_delete_row(file_row);
         row = NULL;
         if (E.cursor_y == 0) {
-            E.row_offset--;
+            E.row_offset -= 1;
         } else {
-            E.cursor_y--;
+            E.cursor_y -= 1;
         }
         E.cursor_x = file_column;
         if (E.cursor_x >= E.screen_columns) {
@@ -687,9 +687,9 @@ static void editor_delete_char(void) {
     } else {
         editor_row_delete_char(row, file_column - 1);
         if (E.cursor_x == 0 && E.column_offset) {
-            E.column_offset--;
+            E.column_offset -= 1;
         } else {
-            E.cursor_x--;
+            E.cursor_x -= 1;
         }
     }
     if (row) { editor_update_row(row); }
@@ -833,7 +833,7 @@ static void editor_refresh_screen(void) {
     if (row) {
         for (int i = E.column_offset; i < (E.cursor_x + E.column_offset); i++) {
             if (i < row->size && row->chars[i] == TAB) { cursor_x_including_expanded_tabs += 7 - ((cursor_x_including_expanded_tabs) % 8); }
-            cursor_x_including_expanded_tabs++;
+            cursor_x_including_expanded_tabs += 1;
         }
     }
     char *buffer = NULL;
@@ -862,9 +862,9 @@ static void editor_move_cursor_by_arrow_key_input(int key) {
     if (key == ARROW_LEFT || key == CTRL_B) {
         if (E.cursor_x == 0) {
             if (E.column_offset) {
-                E.column_offset--;
+                E.column_offset -= 1;
             } else if (file_row > 0) {
-                E.cursor_y--;
+                E.cursor_y -= 1;
                 E.cursor_x = E.row[file_row - 1].size;
                 if (E.cursor_x > E.screen_columns - 1) {
                     E.column_offset = E.cursor_x - E.screen_columns + 1;
@@ -877,7 +877,7 @@ static void editor_move_cursor_by_arrow_key_input(int key) {
     } else if (key == ARROW_RIGHT || key == CTRL_F) {
         if (row && file_column < row->size) {
             if (E.cursor_x == E.screen_columns - 1) {
-                E.column_offset++;
+                E.column_offset += 1;
             } else {
                 E.cursor_x += 1;
             }
@@ -885,14 +885,14 @@ static void editor_move_cursor_by_arrow_key_input(int key) {
             E.cursor_x = 0;
             E.column_offset = 0;
             if (E.cursor_y == E.screen_rows - 1) {
-                E.row_offset++;
+                E.row_offset += 1;
             } else {
                 E.cursor_y += 1;
             }
         }
     } else if (key == ARROW_UP || key == CTRL_P) {
         if (E.cursor_y == 0) {
-            if (E.row_offset) { E.row_offset--; }
+            if (E.row_offset) { E.row_offset -= 1; }
         } else {
             E.cursor_y -= 1;
         }
@@ -900,7 +900,7 @@ static void editor_move_cursor_by_arrow_key_input(int key) {
     } else if (key == ARROW_DOWN || key == CTRL_N) {
         if (file_row < E.number_of_rows) {
             if (E.cursor_y == E.screen_rows - 1) {
-                E.row_offset++;
+                E.row_offset += 1;
             } else {
                 E.cursor_y += 1;
             }
