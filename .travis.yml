@@ -1,0 +1,9 @@
+sudo: required
+os: linux
+language: c
+install:
+  - sudo apt-get update
+  - sudo apt-get install cppcheck clang
+script:
+  - make
+  - make lint

@@ -9,7 +9,7 @@ indent:
 
 lint:
 	clang --analyze openemacs.c -o /dev/null
-	cppcheck --enable=all --inconclusive openemacs.c 2>&1 | grep -vE '(Checking openemacs|Cppcheck cannot find all the include files)' || true
+	cppcheck --enable=all --inconclusive openemacs.c 2>&1 | grep -vE '(Checking openemacs|Cppcheck cannot find all the include files|Checking usage of global functions)' || true
 
 cloc:
 	cloc openemacs.c
