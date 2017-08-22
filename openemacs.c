@@ -144,6 +144,7 @@ static void editor_set_status_message(char const *format, ...) {
     va_list ap;
     va_start(ap, format);
     free(E.status_message);
+    E.status_message = NULL;
     if (vasprintf(&E.status_message, format, ap) == -1) { perror("vasprintf failed."); exit(EXIT_FAILURE); }
     va_end(ap);
     E.status_message_last_update = time(NULL);
