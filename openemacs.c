@@ -117,10 +117,17 @@ char *GO_SYNTAX_HIGHLIGHT_KEYWORDS[] = {
 // Python
 char *PYTHON_SYNTAX_HIGHLIGHT_FILE_EXTENSIONS[] = { ".py", NULL };
 char *PYTHON_SYNTAX_HIGHLIGHT_KEYWORDS[] = {
-    // Python keywords
-    "and", "as", "assert", "break", "class", "continue", "def", "del", "elif", "else", "except", "exec", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "with", "yield",
+    // Python keywords and built-in functions
+    "and", "as", "assert", "break", "class", "continue", "def", "del", "elif", "else", "except", "exec", "finally", "for", "from", "global",
+    "if", "import", "in", "is", "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "with", "yield", "async", "await",
+    "nonlocal", "range", "xrange", "reduce", "map", "filter", "all", "any", "sum", "dir", "abs", "breakpoint", "compile", "delattr", "divmod",
+    "format", "eval", "getattr", "hasattr", "hash", "help", "id", "input", "isinstance", "issubclass", "len", "locals", "max", "min", "next",
+    "open", "pow", "repr", "reversed", "round", "setattr", "slice", "sorted", "super", "vars", "zip", "__import__", "reload", "raw_input",
+    "execfile", "file", "cmp", "basestring",
     // Python types
-    "buffer|", "bytearray|", "complex|", "False|", "float|", "frozenset|", "int|", "list|", "long|", "None|", "set|", "str|", "tuple|", "True|", "type|", "unicode|", "xrange|", NULL
+    "buffer|", "bytearray|", "bytes|", "complex|", "float|", "frozenset|", "int|", "list|", "long|", "None|", "set|", "str|", "chr|", "tuple|",
+    "bool|", "False|", "True|", "type|", "unicode|", "dict|", "ascii|", "bin|", "callable|", "classmethod|", "enumerate|", "hex|", "oct|", "ord|",
+    "iter|", "memoryview|", "object|", "property|", "staticmethod|", "unichr|", NULL
 };
 
 // JavaScript
