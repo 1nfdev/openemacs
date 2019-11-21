@@ -973,13 +973,21 @@ static void editor_search(void) {
     int saved_cursor_x = E.cursor_x, saved_cursor_y = E.cursor_y;
     int saved_column_offset = E.column_offset, saved_row_offset = E.row_offset;
     while (true) {
-        editor_set_status_message("Search (use ESC/Arrows/Enter): %s", query);
+        editor_set_status_message("Search: %s", query);
         editor_refresh_screen();
         int key = editor_read_key();
         if (key == DEL_KEY || key == BACKSPACE || key == FORWARD_DELETE) {
             if (query_length != 0) { query[--query_length] = '\0'; }
             last_match = -1;
-        } else if (key == ESC || key == CTRL_C || key == ENTER) {
+        } else if (key == CTRL_S || key == CTRL_F) {
+            search_next = 1;
+        } else if (key == CTRL_R || key == CTRL_B) {
+            search_next = -1;
+        } else if (isprint(key) && query_length < SEARCH_QUERY_MAX_LENGTH) {
+            query[query_length++] = key;
+            query[query_length] = '\0';
+            last_match = -1;
+        } else {
             if (key == ESC || key == CTRL_C) {
                 E.cursor_x = saved_cursor_x;
                 E.cursor_y = saved_cursor_y;
@@ -991,14 +999,6 @@ static void editor_search(void) {
             editor_set_status_message("%s", "");
             free(saved_hl);
             return;
-        } else if (key == ARROW_RIGHT || key == ARROW_DOWN || key == CTRL_S || key == CTRL_F) {
-            search_next = 1;
-        } else if (key == ARROW_LEFT || key == ARROW_UP || key == CTRL_R || key == CTRL_B) {
-            search_next = -1;
-        } else if (isprint(key) && query_length < SEARCH_QUERY_MAX_LENGTH) {
-            query[query_length++] = key;
-            query[query_length] = '\0';
-            last_match = -1;
         }
         // Search occurrence.
         if (last_match == -1) { search_next = 1; }
