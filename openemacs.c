@@ -454,10 +454,8 @@ static int editor_syntax_to_color(enum SYNTAX_HIGHLIGHT_MODE hl) {
         return 35;    // normal magenta foreground
     } else if (hl == SYNTAX_HIGHLIGHT_MODE_KEYWORD_GROUP_2) {
         return 32;    // normal green foreground
-    } else if (hl == SYNTAX_HIGHLIGHT_MODE_STRING) {
+    } else if (hl == SYNTAX_HIGHLIGHT_MODE_STRING || hl == SYNTAX_HIGHLIGHT_MODE_NUMBER) {
         return 95;    // bright magenta foreground
-    } else if (hl == SYNTAX_HIGHLIGHT_MODE_NUMBER) {
-        return 97;    // bright white foreground
     } else if (hl == SYNTAX_HIGHLIGHT_MODE_SEARCH_MATCH) {
         return 96;    // bright cyan foreground
     } else if (hl == SYNTAX_HIGHLIGHT_MODE_TRAILING_WHITESPACE) {
