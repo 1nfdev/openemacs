@@ -429,10 +429,10 @@ static void editor_update_syntax(struct editor_row *row) {
         p += 1;
         i += 1;
     }
-    for (int i = row->rendered_size - 1; i >= 0; i--) {
-        if (row->rendered_chars_syntax_highlight_type[i] == SYNTAX_HIGHLIGHT_MODE_MULTI_LINE_COMMENT) { break; }
-        if (isspace(row->rendered_chars[i]) || row->rendered_chars[i] == '\0' || row->rendered_chars[i] == '\n' || row->rendered_chars[i] == '\r') {
-            row->rendered_chars_syntax_highlight_type[i] = SYNTAX_HIGHLIGHT_MODE_TRAILING_WHITESPACE;
+    for (int j = row->rendered_size - 1; j >= 0; j--) {
+        if (row->rendered_chars_syntax_highlight_type[j] == SYNTAX_HIGHLIGHT_MODE_MULTI_LINE_COMMENT) { break; }
+        if (isspace(row->rendered_chars[j]) || row->rendered_chars[j] == '\0' || row->rendered_chars[j] == '\n' || row->rendered_chars[j] == '\r') {
+            row->rendered_chars_syntax_highlight_type[j] = SYNTAX_HIGHLIGHT_MODE_TRAILING_WHITESPACE;
         } else {
             break;
         }
